@@ -1,0 +1,34 @@
+# Small Prolog makefile for SUN-unix
+# by Henri de Feraudy
+
+EXE=.exe
+CC=gcc -m32 -Wall
+CFLAGS=-O2 -DMSWIN -DGCC -DCLOCK
+
+OBJ =   prprint.o prscan.o prparse.o prunify.o pralloc.o\
+	prbltin.o prlush.o prhash.o prmswin.o prerror.o prcnsult.o\
+	prdebug.o prassert.o curterm.o
+
+
+sprolog$(EXE): $(OBJ) prmain.o
+	$(CC) -o sprolog$(EXE) prmain.o $(OBJ) 
+
+sprolog.a : $(OBJ)
+	$(AR) ruv sprolog.a $(OBJ) ; ranlib sprolog.a; echo 'Thats it'
+	
+$(OBJ) :  prtypes.h 
+
+prparse.o prscan.o : prlex.h
+
+prlush.o : prlush.h
+
+pp.o: pp.c
+	$(CC) -c $(CFLAGS) pp.c
+
+pp$(EXE): pp.o
+	$(CC) -o pp$(EXE) $(CFLAGS) pp.o
+	
+clean:
+	$(RM) sprolog$(EXE)
+	$(RM) $(OBJ)
+
